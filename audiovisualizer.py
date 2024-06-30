@@ -81,7 +81,7 @@ def smooth_data(data, window_len=10):
 audio, sr = librosa.load('Overkill.mp3', sr=None)
 frames = frame_audio(audio, FFT_size=2048, fps=24, sample_rate=sr)
 
-frames = [frames[i] for i in range(480)]
+frames = [frames[i] for i in range(1000)]
 
 fps = 24
 hop_length = int(sr / fps)  # Calculate hop length

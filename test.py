@@ -25,9 +25,9 @@ def aggregate_frequencies(magnitudes, num_bands, sample_rate, FFT_size):
     bands = np.zeros(num_bands)
     
     # Logarithmic scaling
-    log_freqs = np.logspace(np.log10(freq_bins[1]), np.log10(freq_bins[-1]), num_bands)
+    log_freqs = np.logspace(np.log10(freq_bins[1]), np.log10(freq_bins[-1]), num_bands + 1)
     
-    for i in range(num_bands - 1):
+    for i in range(num_bands):
         start_bin = np.where(freq_bins >= log_freqs[i])[0]
         end_bin = np.where(freq_bins < log_freqs[i + 1])[0] if i + 1 < num_bands else np.arange(len(freq_bins))
 
@@ -55,7 +55,19 @@ hop_length = int(sr / fps)
 
 num_bands = 64
 dft_results = np.array([aggregate_frequencies(get_magnitudes(frame), num_bands, sr, 2048) for frame in frames])
-dft_results_smoothed = np.array([smooth_data(frame) for frame in dft_results])
+
+# Debugging plots
+plt.figure()
+plt.plot(dft_results[0])
+plt.title('Raw Aggregated Frequencies (First Frame)')
+plt.show()
+
+dft_results_smoothed = np.array([smooth_data(frame, window_len=7) for frame in dft_results])
+
+plt.figure()
+plt.plot(dft_results_smoothed[0])
+plt.title('Smoothed Aggregated Frequencies (First Frame)')
+plt.show()
 
 fig, ax = plt.subplots()
 line, = ax.plot(dft_results_smoothed[0])
@@ -66,5 +78,9 @@ def update(frame):
     return line,
 
 ani = FuncAnimation(fig, update, frames=len(dft_results_smoothed), blit=True)
-ani.save('audio_visualizer2.gif', writer='pillow', fps=24)
+ani.save('audio_visualizer.mp4', writer='ffmpeg', fps=24)
+
+#Use Following line to combine audio with mp4 and then compare the animation
+# ffmpeg -i animation.mp4 -i audio.mp3 -c:v copy -c:a aac -strict experimental output.mp4
+
 plt.show()
