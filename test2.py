@@ -10,9 +10,9 @@ def frame_audio(audio, FFT_size=2048, fps=24, sample_rate=22050, window='hann'):
     hop_size = int(sample_rate / fps)
     num_frames = 1 + int((len(audio) - FFT_size) / hop_size)
     frames = np.zeros((num_frames, FFT_size))
-    window_func = np.hanning(FFT_size) if window == 'hann' else np.ones(FFT_size)
+    #window_func = np.hanning(FFT_size) if window == 'hann' else np.ones(FFT_size)
     for i in range(num_frames):
-        frames[i] = audio[i * hop_size:i * hop_size + FFT_size] * window_func
+        frames[i] = audio[i * hop_size:i * hop_size + FFT_size] #* window_func
     return frames
 
 # Calculate magnitudes from DFT results
@@ -38,7 +38,7 @@ def smooth_data(data, window_len=15):
 # Load audio
 audio, sr = librosa.load('Overkill.mp3', sr=None)
 frames = frame_audio(audio, sample_rate=sr)
-# frames = [frames[i] for i in range(1000)]
+frames = [frames[i] for i in range(2500)]
 num_bands = 64
 dft_results = np.array([aggregate_frequencies(get_magnitudes(frame), num_bands, sr, 2048) for frame in frames])
 
@@ -55,13 +55,7 @@ def update(frame):
         bar.set_height(h)
     return bars
 
-# fig, ax = plt.subplots()
-# line, = ax.plot(dft_results_smoothed[0])
-# ax.set_ylim(0, 1)  # Since we normalized the bands
-
-# def update(frame):
-#     line.set_ydata(dft_results_smoothed[frame])
-#     return line,
+print("Saving Animation")
 
 # Create animation
 ani = FuncAnimation(fig, update, frames=len(dft_results_smoothed), blit=True)
@@ -76,6 +70,8 @@ command = [
     "-strict", "experimental",
     "audio_visualize.mp4"
 ]
+
+print("Merging Video and Audio")
 
 result = subprocess.run(command, capture_output=True, text=True)
 
