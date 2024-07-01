@@ -30,8 +30,11 @@ def FastFourierTransform (signal):
 
     N = len(signal)
 
-    if (N <= 1):
-        return signal
+    # if (N <= 1):
+    #     return signal
+    
+    if N <= 1:
+        return [(signal[0], 0)]
     
     # Compute Even and Odd Terms of the Fourier Transform
     even = FastFourierTransform(signal[0::2])

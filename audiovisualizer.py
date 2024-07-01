@@ -9,8 +9,8 @@ from matplotlib.animation import FuncAnimation
 import concurrent.futures
 from FourierTransform import FastFourierTransform,  manual_rfftfreq
 
-fps = 24
-FFT_size = 2048
+fps = 30
+FFT_size = 2048 * 4
 num_bands = 64
 
 # Start the timer
@@ -53,8 +53,7 @@ def SmoothData(data, window_len=15):
     return np.convolve(data, np.ones(window_len)/window_len, mode='same')
 
 def SmoothData2D(data, window_len=15):
-    print("Data shape:", data.shape)  # Debugging line to check the shape of the input
-    kernel = np.ones((3, window_len)) / (window_len * window_len)
+    kernel = np.ones((3, window_len)) / (window_len)
     return convolve2d(data, kernel, mode='same', boundary='wrap')
 
 def Parallel (frame):
