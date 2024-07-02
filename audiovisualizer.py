@@ -9,6 +9,9 @@ from matplotlib.animation import FuncAnimation
 import concurrent.futures
 from FourierTransform import FastFourierTransform,  manual_rfftfreq
 
+# Consider 2d Smotthing Data before aggrgating?
+# Try to get max of overall, and then for each box, find the max over time and do max / max for box, and then scale that box to that factor so that everything eventually reaches Max 
+
 fps = 30
 FFT_size = 2048 * 4
 num_bands = 64
@@ -52,8 +55,8 @@ def AgreggateFrequencies(magnitudes, num_bands, sample_rate, FFT_size):
 def SmoothData(data, window_len=15):
     return np.convolve(data, np.ones(window_len)/window_len, mode='same')
 
-def SmoothData2D(data, window_len=15):
-    kernel = np.ones((3, window_len)) / (window_len)
+def SmoothData2D(data, window_len=5):
+    kernel = np.ones((window_len, window_len)) / (window_len)
     return convolve2d(data, kernel, mode='same', boundary='wrap')
 
 def Parallel (frame):
@@ -74,11 +77,6 @@ if __name__ == '__main__':
         dft_results = np.array(list(executor.map(Parallel, frames)))
 
     dft_results_smoothed = SmoothData2D(dft_results)
-
-    #dft_results = np.array([AgreggateFrequencies(GetMagnitudes(frame), num_bands, sr, FFT_size) for frame in frames])
-
-    # Apply smoothing for better visual effect
-    # dft_results_smoothed = np.array([SmoothData(dft_results) for bands in dft_results])
 
     # Set up the plot
     fig, ax = plt.subplots()
