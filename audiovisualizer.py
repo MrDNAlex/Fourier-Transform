@@ -13,14 +13,16 @@ from FourierTransform import FastFourierTransform,  manual_rfftfreq
 # Try to get max of overall, and then for each box, find the max over time and do max / max for box, and then scale that box to that factor so that everything eventually reaches Max 
 
 fps = 30
-FFT_size = 2048 * 4
+FFT_size = 2048*4
 num_bands = 64
 
 # Start the timer
 start_time = time.time()
 
 # Load audio
-audio, sr = librosa.load('Overkill.mp3', sr=None)
+audio, sr = librosa.load('WatchOut.mp3', sr=None)
+
+print(sr)
 
 def FrameAudio(audio, FFT_size=2048, fps=24, sample_rate=22050, window='hann'):
     hop_size = int(sample_rate / fps)
@@ -70,6 +72,7 @@ if __name__ == '__main__':
 
     frames = FrameAudio(audio, sample_rate=sr, fps=fps, FFT_size=FFT_size)
     # frames = [frames[i] for i in range(2500)]
+    print("Length" + str(len(frames[0])))
 
     dft_results = 0
 
@@ -95,9 +98,9 @@ if __name__ == '__main__':
     ani.save('animation.mp4', writer='ffmpeg', fps=fps)
 
     command = [
-        "C:\\FFmpeg\\bin\\ffmpeg.exe",
+        "C:\\FFmpeg\\App\\bin\\ffmpeg.exe",
         "-i", "animation.mp4",
-        "-i", "Overkill.mp3",
+        "-i", "WatchOut.mp3",
         "-c:v", "copy",
         "-c:a", "aac",
         "-strict", "experimental",
