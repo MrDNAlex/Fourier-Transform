@@ -30,9 +30,6 @@ def FastFourierTransform (signal):
 
     N = len(signal)
 
-    # if (N <= 1):
-    #     return signal
-    
     if N <= 1:
         return [(signal[0], 0)]
     
